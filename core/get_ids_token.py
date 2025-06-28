@@ -6,16 +6,16 @@ from utils.session_manager import SessionManager
 from utils.logger import log
 
 
-class QfnuAuthClient:
-    """曲阜师范大学统一认证客户端"""
+class QfnuAuthClient(SessionManager):
+    """曲阜师范大学统一认证客户端，继承SessionManager"""
 
-    def __init__(self, session_manager: Optional[SessionManager] = None):
+    def __init__(self, timeout: int = 30):
         """初始化客户端
 
         Args:
-            session_manager (SessionManager, optional): 会话管理器，如果不提供则创建新的
+            timeout (int): 请求超时时间，默认30秒
         """
-        self.session_manager = session_manager or SessionManager()
+        super().__init__(timeout=timeout)
         self.encryptor = PasswordEncryptor()
 
     def get_salt_and_execution(self, redir_uri):
@@ -29,7 +29,7 @@ class QfnuAuthClient:
         """
 
         try:
-            response = self.session_manager.get(url=redir_uri)
+            response = self.get(url=redir_uri)
             soup = BeautifulSoup(response.text, "html.parser")
 
             # 修复BeautifulSoup的使用方法，添加正确的类型检查
@@ -61,7 +61,7 @@ class QfnuAuthClient:
         params = {"username": username, "_": int(round(time.time() * 1000))}
 
         try:
-            res = self.session_manager.get(url=uri, params=params)
+            res = self.get(url=uri, params=params)
             return "true" in res.text
         except Exception as e:
             log.error(f"检查是否需要验证码失败: {str(e)}")
@@ -76,7 +76,7 @@ class QfnuAuthClient:
         uri = f"http://ids.qfnu.edu.cn/authserver/getCaptcha.htl?{int(round(time.time() * 1000))}"
 
         try:
-            res = self.session_manager.get(url=uri)
+            res = self.get(url=uri)
             return res.content
         except Exception as e:
             log.error(f"获取验证码失败: {str(e)}")
@@ -136,7 +136,7 @@ class QfnuAuthClient:
 
         # 提交认证请求
         try:
-            res = self.session_manager.post(
+            res = self.post(
                 url=redir_uri, headers=headers, data=data, allow_redirects=False
             )
 
@@ -155,17 +155,12 @@ class QfnuAuthClient:
         Returns:
             dict: Cookie字典
         """
-        return self.session_manager.get_cookies()
-
-    def close(self):
-        """关闭会话"""
-        self.session_manager.close()
+        return self.get_cookies()
 
 
 if __name__ == "__main__":
     # 使用上下文管理器确保资源正确释放
-    with SessionManager() as session_mgr:
-        client = QfnuAuthClient(session_mgr)
+    with QfnuAuthClient() as client:
         redirect_url = client.get_token(
             "your_account",
             "your_password",

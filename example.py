@@ -6,9 +6,6 @@ from utils.logger import log
 
 def main():
     """示例：如何使用认证客户端获取Token"""
-    # 创建客户端实例
-    client = QfnuAuthClient()
-
     # 从环境变量读取账号密码
     username = os.getenv("USERNAME")
     password = os.getenv("PASSWORD")
@@ -22,17 +19,19 @@ def main():
 
     log.info("正在尝试获取认证Token...")
 
-    # 获取认证Token
-    redirect_url = client.get_token(
-        username=username, password=password, redir_uri=target_url
-    )
+    # 使用上下文管理器创建客户端实例，确保资源正确释放
+    with QfnuAuthClient() as client:
+        # 获取认证Token
+        redirect_url = client.get_token(
+            username=username, password=password, redir_uri=target_url
+        )
 
-    # 处理认证结果
-    if redirect_url:
-        log.info(f"认证成功！重定向URL：{redirect_url}")
+        # 处理认证结果
+        if redirect_url:
+            log.info(f"认证成功！重定向URL：{redirect_url}")
 
-    else:
-        log.error("认证失败，请检查账号密码是否正确或网络连接")
+        else:
+            log.error("认证失败，请检查账号密码是否正确或网络连接")
 
 
 if __name__ == "__main__":
