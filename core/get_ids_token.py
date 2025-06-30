@@ -101,21 +101,21 @@ class QfnuAuthClient(SessionManager):
         # 验证码处理
         # 备注：理想情况下不需要验证码
         # 修改版已删除验证码识别功能
-        cap_res = ""
-        log.info("正在检查是否需要验证码")
-        if self.check_need_captcha(username):
-            log.info("需要验证码，正在尝试获取验证码")
-            try:
-                cap_pic = self.get_captcha()
-                if cap_pic:
-                    cap_res = ""
-                    if isinstance(cap_res, str):
-                        cap_res = cap_res.lower()
-                        log.info(f"验证码识别结果: {cap_res}")
-            except Exception as e:
-                log.error(f"获取或识别验证码失败: {str(e)}")
-        else:
-            log.info("无需验证码，尝试获取Token")
+        # cap_res = ""
+        # log.info("正在检查是否需要验证码")
+        # if self.check_need_captcha(username):
+        #     log.info("需要验证码，正在尝试获取验证码")
+        #     try:
+        #         cap_pic = self.get_captcha()
+        #         if cap_pic:
+        #             cap_res = ""
+        #             if isinstance(cap_res, str):
+        #                 cap_res = cap_res.lower()
+        #                 log.info(f"验证码识别结果: {cap_res}")
+        #     except Exception as e:
+        #         log.error(f"获取或识别验证码失败: {str(e)}")
+        # else:
+        #     log.info("无需验证码，尝试获取Token")
 
         # 加密密码
         enc_passwd = self.encryptor.encrypt_password(password, salt)
@@ -126,7 +126,7 @@ class QfnuAuthClient(SessionManager):
         data = {
             "username": username,
             "password": enc_passwd,
-            "captcha": cap_res,
+            # "captcha": cap_res,
             "_eventId": "submit",
             "cllt": "userNameLogin",
             "dllt": "generalLogin",
