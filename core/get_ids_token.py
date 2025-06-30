@@ -82,7 +82,7 @@ class QfnuAuthClient(SessionManager):
             log.error(f"获取验证码失败: {str(e)}")
             return None
 
-    def get_token(self, username, password, redir_uri):
+    def get_redir_uri(self, username, password, redir_uri):
         """获取认证token
 
         Args:
@@ -161,7 +161,7 @@ class QfnuAuthClient(SessionManager):
 if __name__ == "__main__":
     # 使用上下文管理器确保资源正确释放
     with QfnuAuthClient() as client:
-        redirect_url = client.get_token(
+        redirect_url = client.get_redir_uri(
             "your_account",
             "your_password",
             "http://ids.qfnu.edu.cn/authserver/login?service=http://zhjw.qfnu.edu.cn/jsxsd/framework/xsMain.jsp",

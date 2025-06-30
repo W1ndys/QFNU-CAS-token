@@ -24,12 +24,12 @@ def main():
         log.error("可以在 .env 文件中设置或直接设置环境变量")
         return
 
-    log.info("正在尝试获取认证Token...")
+    log.info("正在尝试获取认证重定向URL...")
 
     # 使用上下文管理器创建客户端实例，确保资源正确释放
     with QfnuAuthClient() as client:
-        # 获取认证Token
-        redirect_url = client.get_token(
+        # 获取认证重定向URL
+        redirect_url = client.get_redir_uri(
             username=username, password=password, redir_uri=target_url
         )
 

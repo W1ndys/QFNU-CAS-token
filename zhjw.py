@@ -29,15 +29,15 @@ class ZhjwClient:
         """登录教务系统"""
         target_url = "http://ids.qfnu.edu.cn/authserver/login?service=http://zhjw.qfnu.edu.cn/sso.jsp"
 
-        log.info("正在获取认证Token...")
+        log.info("正在获取认证重定向URL...")
 
-        # 第一步：获取认证Token（重定向URL）
-        redirect_url = self.auth_client.get_token(
+        # 第一步：获取认证重定向URL
+        redirect_url = self.auth_client.get_redir_uri(
             username=username, password=password, redir_uri=target_url
         )
 
         if not redirect_url:
-            log.error("获取认证Token失败")
+            log.error("获取认证重定向URL失败")
             return False
 
         log.info(f"获取到重定向URL：{redirect_url}")
