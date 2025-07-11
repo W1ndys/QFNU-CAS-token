@@ -157,6 +157,11 @@ class QfnuAuthClient(SessionManager):
         """
         return self.get_cookies()
 
+    def get_jw_cookie(self):
+        """获取教务系统cookie"""
+        res = self.get(url="http://zhjw.qfnu.edu.cn/jsxsd/framework/xsMain.jsp")
+        return res.cookies
+
 
 if __name__ == "__main__":
     # 使用上下文管理器确保资源正确释放

@@ -36,6 +36,9 @@ def main():
         # 处理认证结果
         if redirect_url:
             log.info(f"认证成功！重定向URL：{redirect_url}")
+            # 获取教务系统cookie
+            jw_cookie = client.get_jw_cookie()
+            log.info(f"教务系统cookie：{jw_cookie}")
         else:
             log.error("认证失败，请检查账号密码是否正确或网络连接")
 
