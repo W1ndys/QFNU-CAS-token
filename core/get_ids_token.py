@@ -158,9 +158,10 @@ class QfnuAuthClient(SessionManager):
         return self.get_cookies()
 
     def get_jw_cookie(self):
-        """获取教务系统cookie"""
+        """获取教务系统cookie，返回字符串格式"""
         res = self.get(url="http://zhjw.qfnu.edu.cn/jsxsd/framework/xsMain.jsp")
-        return res.cookies
+        # 将cookie字典转换为字符串格式
+        return "; ".join([f"{k}={v}" for k, v in res.cookies.items()])
 
 
 if __name__ == "__main__":
