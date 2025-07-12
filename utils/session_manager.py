@@ -1,6 +1,6 @@
 import requests
 from typing import Optional, Dict, Any
-from utils.logger import log
+from utils.logger import logger
 
 
 class SessionManager:
@@ -48,7 +48,7 @@ class SessionManager:
         if headers:
             request_headers.update(headers)
 
-        log.debug(f"GET请求: {url}")
+        logger.debug(f"GET请求: {url}")
 
         return self.session.get(
             url=url,
@@ -80,7 +80,7 @@ class SessionManager:
         if headers:
             request_headers.update(headers)
 
-        log.debug(f"POST请求: {url}")
+        logger.debug(f"POST请求: {url}")
 
         return self.session.post(
             url=url, data=data, headers=request_headers, timeout=self.timeout, **kwargs

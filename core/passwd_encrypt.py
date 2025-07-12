@@ -3,7 +3,7 @@ import base64
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
-from utils.logger import log
+from utils.logger import logger
 
 
 class PasswordEncryptor:
@@ -76,4 +76,4 @@ class PasswordEncryptor:
 
 if __name__ == "__main__":
     encryptor = PasswordEncryptor()
-    log.info(encryptor.encrypt_password("", "LqqQdC3a3DIin1P1"))
+    logger.info(encryptor.encrypt_password("", "LqqQdC3a3DIin1P1"))

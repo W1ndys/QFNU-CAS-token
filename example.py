@@ -2,7 +2,7 @@
 import os
 import re
 from core.get_ids_token import QfnuAuthClient
-from utils.logger import log
+from utils.logger import logger
 
 
 class ZhjwClient:
@@ -29,7 +29,7 @@ class ZhjwClient:
         """登录教务系统"""
         target_url = "http://ids.qfnu.edu.cn/authserver/login?service=http://zhjw.qfnu.edu.cn/sso.jsp"
 
-        log.info("正在获取认证重定向URL...")
+        logger.info("正在获取认证重定向URL...")
 
         # 第一步：获取认证重定向URL
         redirect_url = self.auth_client.get_redir_uri(
@@ -37,10 +37,10 @@ class ZhjwClient:
         )
 
         if not redirect_url:
-            log.error("获取认证重定向URL失败")
+            logger.error("获取认证重定向URL失败")
             return False
 
-        log.info(f"获取到重定向URL：{redirect_url}")
+        logger.info(f"获取到重定向URL：{redirect_url}")
 
         # 第二步：访问重定向URL完成SSO登录
         return self._complete_sso_login(redirect_url)
@@ -51,31 +51,31 @@ class ZhjwClient:
             # 访问重定向URL（包含ticket）
             response = self.auth_client.get(redirect_url, allow_redirects=True)
 
-            log.info(f"访问重定向URL状态码：{response.status_code}")
-            log.debug(f"访问重定向URL响应头：{dict(response.headers)}")
+            logger.info(f"访问重定向URL状态码：{response.status_code}")
+            logger.debug(f"访问重定向URL响应头：{dict(response.headers)}")
 
-            log.info("正在访问SSO重定向URL...")
+            logger.info("正在访问SSO重定向URL...")
             sso_url = "http://zhjw.qfnu.edu.cn/sso.jsp"
             response = self.auth_client.get(sso_url, allow_redirects=True)
 
-            log.info(f"访问sso.jsp状态码：{response.status_code}")
-            log.debug(f"访问sso.jsp响应头：{dict(response.headers)}")
+            logger.info(f"访问sso.jsp状态码：{response.status_code}")
+            logger.debug(f"访问sso.jsp响应头：{dict(response.headers)}")
 
             # 访问教务首页
             main_url = "http://zhjw.qfnu.edu.cn/jsxsd/framework/xsMain.jsp"
             response = self.auth_client.get(main_url, allow_redirects=True)
-            log.info(f"访问教务首页状态码：{response.status_code}")
-            log.debug(f"访问教务首页响应头：{dict(response.headers)}")
+            logger.info(f"访问教务首页状态码：{response.status_code}")
+            logger.debug(f"访问教务首页响应头：{dict(response.headers)}")
 
             if self._check_login_success(response.text):
-                log.info("教务系统登录成功！")
+                logger.info("教务系统登录成功！")
                 return True
             else:
-                log.error("教务系统登录失败！")
+                logger.error("教务系统登录失败！")
                 return False
 
         except Exception as e:
-            log.error(f"SSO登录过程中发生错误：{e}")
+            logger.error(f"SSO登录过程中发生错误：{e}")
             return False
 
     def _check_login_success(self, html_content):
@@ -92,10 +92,10 @@ class ZhjwClient:
         for pattern in patterns:
             match = re.search(pattern, html_content)
             if match:
-                log.info(f"登录验证成功，匹配到：{match.group()}")
+                logger.info(f"登录验证成功，匹配到：{match.group()}")
                 return True
 
-        log.error("未找到登录成功的标识")
+        logger.error("未找到登录成功的标识")
         return False
 
 
@@ -107,8 +107,8 @@ def main():
 
     # 检查环境变量是否设置
     if not username or not password:
-        log.error("错误：请设置环境变量 USERNAME 和 PASSWORD")
-        log.error("可以在 .env 文件中设置或直接设置环境变量")
+        logger.error("错误：请设置环境变量 USERNAME 和 PASSWORD")
+        logger.error("可以在 .env 文件中设置或直接设置环境变量")
         return
 
     # 创建教务系统客户端
@@ -117,10 +117,10 @@ def main():
     # 登录教务系统
     if client.login(username, password):
         # 打印cookie
-        log.info(client.auth_client.session.cookies)
+        logger.info(client.auth_client.session.cookies)
 
     else:
-        log.error("登录失败，请检查账号密码是否正确或网络连接")
+        logger.error("登录失败，请检查账号密码是否正确或网络连接")
 
 
 if __name__ == "__main__":

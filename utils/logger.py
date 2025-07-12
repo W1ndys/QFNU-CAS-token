@@ -58,4 +58,4 @@ def setup_logger():
 
 
 # 创建一个全局实例，方便在其他模块中直接导入使用
-log = setup_logger()
+logger = setup_logger()

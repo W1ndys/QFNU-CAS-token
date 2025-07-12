@@ -3,7 +3,7 @@ import time
 from typing import Optional
 from core.passwd_encrypt import PasswordEncryptor
 from utils.session_manager import SessionManager
-from utils.logger import log
+from utils.logger import logger
 
 
 class QfnuAuthClient(SessionManager):
@@ -42,10 +42,10 @@ class QfnuAuthClient(SessionManager):
                     salt_data = salt_element.get("value")
                     return salt_data, execution_data
 
-            log.error("未能找到加密盐或execution参数")
+            logger.error("未能找到加密盐或execution参数")
             return None, None
         except Exception as e:
-            log.error(f"获取加密盐和execution失败: {str(e)}")
+            logger.error(f"获取加密盐和execution失败: {str(e)}")
             return None, None
 
     def check_need_captcha(self, username):
@@ -64,7 +64,7 @@ class QfnuAuthClient(SessionManager):
             res = self.get(url=uri, params=params)
             return "true" in res.text
         except Exception as e:
-            log.error(f"检查是否需要验证码失败: {str(e)}")
+            logger.error(f"检查是否需要验证码失败: {str(e)}")
             return True  # 出错时默认返回需要验证码
 
     def get_captcha(self):
@@ -79,7 +79,7 @@ class QfnuAuthClient(SessionManager):
             res = self.get(url=uri)
             return res.content
         except Exception as e:
-            log.error(f"获取验证码失败: {str(e)}")
+            logger.error(f"获取验证码失败: {str(e)}")
             return None
 
     def get_redir_uri(self, username, password, redir_uri):
@@ -143,10 +143,10 @@ class QfnuAuthClient(SessionManager):
             if "Location" in res.headers:
                 return res.headers["Location"]
             else:
-                log.error("认证失败，未获得重定向链接")
+                logger.error("认证失败，未获得重定向链接")
                 return None
         except Exception as e:
-            log.error(f"认证过程发生错误: {str(e)}")
+            logger.error(f"认证过程发生错误: {str(e)}")
             return None
 
     def get_auth_cookie(self):
@@ -174,7 +174,7 @@ if __name__ == "__main__":
         )
 
         if redirect_url:
-            log.info(f"认证成功，重定向链接: {redirect_url}")
-            log.info(f"Cookie: {client.get_auth_cookie()}")
+            logger.info(f"认证成功，重定向链接: {redirect_url}")
+            logger.info(f"Cookie: {client.get_auth_cookie()}")
         else:
-            log.error("认证失败")
+            logger.error("认证失败")
